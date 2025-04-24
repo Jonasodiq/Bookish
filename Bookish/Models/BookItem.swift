@@ -11,7 +11,7 @@ import Foundation
 
 struct BookItem: Identifiable, Decodable {
     var id: String { key }
-    let key: String         // ex: "/works/OL123W"
+    let key: String
     let title: String
     let author_name: [String]?
     let cover_i: Int?
