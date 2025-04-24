@@ -7,29 +7,38 @@
 
 import SwiftUI
 
-import SwiftUI
-
 struct HomeGridView: View {
-    let columns = [GridItem(.flexible()), GridItem(.flexible())]
     @EnvironmentObject var authViewModel: AuthViewModel
-
+    let columns = [GridItem(.flexible()), GridItem(.flexible())]
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 20) {
-                    HomeCardView(title: "📖 Nya böcker", color: .blue) {
-                        // navigate to BookListView
-                    }
-                    HomeCardView(title: "📚 Mina böcker", color: .green) {
-                        // navigate to MyBooksView
-                    }
-                    HomeCardView(title: "📌 Senast läst", color: .orange) {
-                        // navigate or show info
-                    }
-                    HomeCardView(title: "📤 Dela en bok", color: .purple) {
-                        // share action or navigate
-                    }
+                    HomeCardView(
+                        title: "📖 Nya böcker",
+                        color: .blue,
+                        icon: "book.fill",
+                        destination: BookListView()
+                    )
+                    HomeCardView(
+                        title: "📚 Mina böcker",
+                        color: .green,
+                        icon: "books.vertical",
+                        destination: MyBooksView()
+                    )
+                    HomeCardView(
+                        title: "📌 Senast läst",
+                        color: .orange,
+                        icon: "clock",
+                        destination: LastReadView()
+                    )
+                    HomeCardView(
+                        title: "📤 Dela en bok",
+                        color: .purple,
+                        icon: "square.and.arrow.up",
+                        destination: ShareBookView()
+                    )
                 }
                 .padding()
             }
@@ -46,7 +55,8 @@ struct HomeGridView: View {
     }
 }
 
-
 #Preview {
     HomeGridView()
+        .environmentObject(AuthViewModel())
 }
+

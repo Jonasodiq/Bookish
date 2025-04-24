@@ -33,14 +33,15 @@ struct HomeCardView<Destination: View>: View {
 }
 
 #Preview {
-    NavigationView {
+    NavigationStack {
         HomeCardView(
-            title: "New Books",
+            title: "📖 Nya böcker",
             color: .blue,
             icon: "book.fill",
-            destination: Text("Destination View")
+            destination: Text("Demo destination")
         )
         .padding()
     }
 }
+
 
