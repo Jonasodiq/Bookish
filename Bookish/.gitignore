@@ -1,0 +1,41 @@
+# Xcode
+build/
+DerivedData/
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.xcworkspace
+xcuserdata/
+
+# SwiftPM
+.build/
+
+# CocoaPods
+Pods/
+Podfile.lock
+
+# Carthage
+Carthage/Build/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+
+# Firebase
+GoogleService-Info.plist
+
+# macOS
+.DS_Store
+*.swp
+
+# Logs
+*.log
+
+# SwiftPM Xcode integration
+Package.resolved
+
+# User-specific files
+*.xcuserstate
+.idea/
