@@ -24,7 +24,7 @@
 ## 🏗️ Architecture
 
 **Model:**
-\`\`\`swift
+```swift
 struct Book: Identifiable, Codable {
   @DocumentID var id: String?
   let title: String
@@ -35,7 +35,7 @@ struct Book: Identifiable, Codable {
   let timestamp: Date
   var isFavorite: Bool = false
 }
-\`\`\`
+```
 
 **ViewModel:**  
 Fetches book data from Open Library API and Firebase Firestore. Publishes the book list.
@@ -46,9 +46,9 @@ Displays books in a list with search functionality and error handling in the UI.
 ## 🛠 Getting Started
 
 1. Clone the repository:
-   \`\`\`bash
-   git clone https://github.com/Jonasodiq/Bookish
-   \`\`\`
+   ```bash
+  git clone https://github.com/Jonasodiq/Bookish
+   ```
 
 2. Open the project in Xcode
 
