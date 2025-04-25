@@ -9,22 +9,39 @@ import SwiftUI
 
 struct BookListView: View {
     @StateObject private var viewModel = BookListViewModel()
+    @StateObject private var myBooksViewModel = MyBooksViewModel()
+    
     @State private var query = "Book"
+    @State private var showingAddBookView = false
 
     var body: some View {
-        NavigationView {
-            VStack {
+        NavigationStack {
+            VStack(alignment: .leading, spacing: 12) {
+              Button("Add a Book") {
+                showingAddBookView = true
+              }
+              .padding()
+              .font(.headline)
+              .buttonStyle(.borderedProminent)
+              
+                Text("Sök efter böcker")
+                .font(.title3.bold())
+                    .padding(.horizontal)
+
+
                 TextField("Search books...", text: $query, onCommit: {
                     viewModel.searchBooks(query: query)
                 })
                 .textFieldStyle(.roundedBorder)
-                .padding()
+                .padding(.horizontal)
 
                 if viewModel.isLoading {
                     ProgressView()
+                        .frame(maxWidth: .infinity)
                 } else if viewModel.books.isEmpty {
-                    Text("No books found")
+                    Text("No books found.")
                         .foregroundColor(.gray)
+                        .padding()
                 } else {
                     List(viewModel.books) { book in
                         HStack {
@@ -34,7 +51,6 @@ struct BookListView: View {
                                         .resizable()
                                         .scaledToFit()
                                         .frame(width: 50, height: 75)
-                                        .shadow(radius: 4)
                                 } else {
                                     Rectangle()
                                         .fill(Color.gray.opacity(0.2))
@@ -47,17 +63,20 @@ struct BookListView: View {
                                 Text(book.author).font(.subheadline).foregroundColor(.secondary)
                             }
                         }
+                        .padding(.vertical, 4)
                     }
                 }
             }
-            .navigationTitle("Browse Books")
+            .navigationTitle("📖 Upptäck böcker")
             .onAppear {
                 viewModel.searchBooks(query: query)
+            }
+            .sheet(isPresented: $showingAddBookView) {
+                AddBookView(viewModel: myBooksViewModel)
             }
         }
     }
 }
-
 
 #Preview {
     BookListView()

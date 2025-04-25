@@ -8,15 +8,25 @@
 import SwiftUI
 
 struct HomeGridView: View {
-    @EnvironmentObject var authViewModel: AuthViewModel
+  @EnvironmentObject var authViewModel: AuthViewModel
+  @StateObject private var myBooksViewModel = MyBooksViewModel()
+  
     let columns = [GridItem(.flexible()), GridItem(.flexible())]
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 20) {
+                  
+                  HomeCardView(
+                        title: "✏️ Ny bok",
+                        color: .orange,
+                        icon: "square.and.pencil",
+                        destination: AddBookView(viewModel: myBooksViewModel)
+                    )
+                  
                     HomeCardView(
-                        title: "📖 Nya böcker",
+                        title: "📖 Böcker",
                         color: .blue,
                         icon: "book.fill",
                         destination: BookListView()
@@ -29,12 +39,12 @@ struct HomeGridView: View {
                     )
                     HomeCardView(
                         title: "📌 Senast läst",
-                        color: .orange,
+                        color: .yellow,
                         icon: "clock",
                         destination: LastReadView()
                     )
                     HomeCardView(
-                        title: "📤 Dela en bok",
+                        title: "📤 Share book",
                         color: .purple,
                         icon: "square.and.arrow.up",
                         destination: ShareBookView()
@@ -59,4 +69,3 @@ struct HomeGridView: View {
     HomeGridView()
         .environmentObject(AuthViewModel())
 }
-

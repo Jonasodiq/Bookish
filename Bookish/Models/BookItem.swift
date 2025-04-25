@@ -7,8 +7,6 @@
 
 import Foundation
 
-import Foundation
-
 struct BookItem: Identifiable, Decodable {
     var id: String { key }
     let key: String

@@ -17,6 +17,5 @@ struct Book: Identifiable, Codable {
     let userId: String
     let coverURL: String
     let timestamp: Date
-    
     var isFavorite: Bool = false
 }

@@ -7,9 +7,6 @@
 
 import Foundation
 
-
-import Foundation
-
 class BookAPIService {
     func fetchBooks(query: String = "swift", completion: @escaping ([BookItem]) -> Void) {
         let urlString = "https://openlibrary.org/search.json?q=\(query)&limit=20"

@@ -8,13 +8,26 @@
 import SwiftUI
 
 struct LastReadView: View {
+    @StateObject private var viewModel = LastReadViewModel()
+
     var body: some View {
-      Text("📌 Last book you read")
-        .font(.title)
-        .padding()
+        VStack {
+            if let book = viewModel.lastReadBook {
+                Text(book.title).font(.title)
+                Text(book.author).foregroundColor(.secondary)
+            } else {
+                Text("You haven’t read any book yet.")
+                    .foregroundColor(.gray)
+            }
+        }
+        .onAppear {
+            viewModel.fetchLastReadBook()
+        }
+        .navigationTitle("Last Read")
     }
 }
 
 #Preview {
     LastReadView()
 }
+

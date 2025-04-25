@@ -43,5 +43,3 @@ struct HomeCardView<Destination: View>: View {
         .padding()
     }
 }
-
-

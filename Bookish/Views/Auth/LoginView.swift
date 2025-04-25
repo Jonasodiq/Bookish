@@ -86,12 +86,7 @@ struct LoginView: View {
             self.errorMessage = error
         }
     }
-  
-  
 }
-
-
-
 
 #Preview {
     LoginView()
