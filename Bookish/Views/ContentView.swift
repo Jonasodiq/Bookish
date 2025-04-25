@@ -8,38 +8,43 @@
 import SwiftUI
 
 struct ContentView: View {
-  var body: some View {
-    TabView {
-      HomeGridView()
-        .tabItem {
-          Image(systemName: "house")
-          Text("Home")
-        }
-      
-      BookListView()
-        .tabItem {
-          Image(systemName: "magnifyingglass")
-          Text("Search")
-        }
-      
-      MyBooksView()
-          .tabItem {
-              Image(systemName: "book")
-              Text("My Books")
-          }
+  @StateObject private var favoritesViewModel = FavoritesViewModel()
+  @StateObject private var myBooksViewModel = MyBooksViewModel()
 
-      FavoritesView()
-          .tabItem {
-              Image(systemName: "star.fill")
-              Text("Favorites")
-          }
-      }
+    var body: some View {
+        TabView {
+            HomeGridView(myBooksViewModel: myBooksViewModel)
+                .tabItem {
+                    Image(systemName: "house")
+                    Text("Home")
+                }
+
+          BookListView(favoritesViewModel: favoritesViewModel)
+                .tabItem {
+                    Image(systemName: "magnifyingglass")
+                    Text("Search")
+                }
+
+            MyBooksView(viewModel: myBooksViewModel)
+                .tabItem {
+                    Image(systemName: "book")
+                    Text("My Books")
+                }
+
+          FavoritesView(viewModel: favoritesViewModel)
+              .tabItem {
+                  Image(systemName: "star.fill")
+                  Text("Favorites")
+              }
+
+        }
     }
-  }
-  
-  #Preview {
+}
+
+#Preview {
     ContentView()
-  }
+}
+
 
 /**
  📖 New Books -> BookListView.swift   <-Lista från API

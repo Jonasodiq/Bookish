@@ -18,6 +18,9 @@ class MyBooksViewModel: ObservableObject {
     // MARK: - Fetch all books for current user
     func fetchMyBooks() {
         guard let userId = Auth.auth().currentUser?.uid else { return }
+      
+      print("Aktuell användare:", userId) // Temp
+      print("Hämtar böcker...") // Temp
 
         db.collection("books")
             .whereField("userId", isEqualTo: userId)
@@ -31,41 +34,47 @@ class MyBooksViewModel: ObservableObject {
                 self.myBooks = snapshot?.documents.compactMap {
                     try? $0.data(as: Book.self)
                 } ?? []
+              
             }
     }
 
     // MARK: - Add new book
-    func addBook(title: String, author: String, comment: String, coverURL: String, isFavorite: Bool) {
-        guard let userId = Auth.auth().currentUser?.uid else { return }
+  func addBook(title: String, author: String, comment: String, coverURL: String, isFavorite: Bool) {
+      guard let userId = Auth.auth().currentUser?.uid else {
+          print("❌ No user logged in")
+          return
+      }
 
-        isSaving = true
+      isSaving = true
 
-        let newBook = Book(
-            title: title,
-            author: author,
-            comment: comment,
-            userId: userId,
-            coverURL: coverURL,
-            timestamp: Date(),
-            isFavorite: isFavorite
-        )
+      let newBook = Book(
+          title: title,
+          author: author,
+          comment: comment,
+          userId: userId,
+          coverURL: coverURL,
+          timestamp: Date(),
+          isFavorite: isFavorite
+      )
 
-        do {
-            _ = try db.collection("books").addDocument(from: newBook) { [weak self] error in
-                DispatchQueue.main.async {
-                    self?.isSaving = false
-                    if let error = error {
-                        print("❌ Error saving book: \(error.localizedDescription)")
-                    } else {
-                        self?.fetchMyBooks()
-                    }
-                }
-            }
-        } catch {
-            print("❌ Firestore encoding error: \(error.localizedDescription)")
-            isSaving = false
-        }
-    }
+      do {
+          _ = try db.collection("books").addDocument(from: newBook) { [weak self] error in
+              DispatchQueue.main.async {
+                  self?.isSaving = false
+                  if let error = error {
+                      print("❌ Error saving book: \(error.localizedDescription)")
+                  } else {
+                      print("✅ Book saved successfully!")
+                      self?.fetchMyBooks()
+                  }
+              }
+          }
+      } catch {
+          print("❌ Firestore encoding error: \(error.localizedDescription)")
+          isSaving = false
+      }
+  }
+
 
     // MARK: - Toggle favorite status
     func toggleFavorite(for book: Book) {

@@ -8,8 +8,14 @@
 import SwiftUI
 
 struct MyBooksView: View {
-    @StateObject private var viewModel = MyBooksViewModel()
+  @ObservedObject var viewModel: MyBooksViewModel
+    
     @State private var showingAddBook = false
+
+    @State private var showFavoriteAlert = false
+    @State private var selectedBook: Book?
+    @State private var showToast = false
+    @State private var toastMessage = ""
 
     var body: some View {
         NavigationStack {
@@ -40,9 +46,10 @@ struct MyBooksView: View {
 
                         Spacer()
 
-                        Button(action: {
-                            viewModel.toggleFavorite(for: book)
-                        }) {
+                        Button {
+                            selectedBook = book
+                            showFavoriteAlert = true
+                        } label: {
                             Image(systemName: book.isFavorite ? "star.fill" : "star")
                                 .foregroundColor(book.isFavorite ? .yellow : .gray)
                         }
@@ -67,10 +74,42 @@ struct MyBooksView: View {
             .onAppear {
                 viewModel.fetchMyBooks()
             }
+            .alert("Ändra favoritstatus?", isPresented: $showFavoriteAlert, presenting: selectedBook) { book in
+                Button("Ja", role: .destructive) {
+                    viewModel.toggleFavorite(for: book)
+                    toastMessage = book.isFavorite ? "Borttagen som favorit" : "Markerad som favorit"
+                    withAnimation {
+                        showToast = true
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        withAnimation {
+                            showToast = false
+                        }
+                    }
+                }
+                Button("Avbryt", role: .cancel) { }
+            } message: { book in
+                Text("Vill du ändra favoritstatus för \"\(book.title)\"?")
+            }
+            .overlay(
+                Group {
+                    if showToast {
+                        Text(toastMessage)
+                            .padding()
+                            .background(Color.black.opacity(0.8))
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                            .transition(.move(edge: .top).combined(with: .opacity))
+                            .zIndex(1)
+                            .padding(.top, 80)
+                    }
+                }, alignment: .top
+            )
         }
     }
 }
 
 #Preview {
-    MyBooksView()
+    MyBooksView(viewModel: MyBooksViewModel())
 }
+

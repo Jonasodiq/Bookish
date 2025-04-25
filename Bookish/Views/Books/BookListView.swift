@@ -6,10 +6,12 @@
 //
 
 import SwiftUI
+import FirebaseAuth
 
 struct BookListView: View {
     @StateObject private var viewModel = BookListViewModel()
     @StateObject private var myBooksViewModel = MyBooksViewModel()
+  @ObservedObject var favoritesViewModel: FavoritesViewModel
     
     @State private var query = "Book"
     @State private var showingAddBookView = false
@@ -62,6 +64,25 @@ struct BookListView: View {
                                 Text(book.title).bold()
                                 Text(book.author).font(.subheadline).foregroundColor(.secondary)
                             }
+                          
+                          Spacer()
+
+                           Button {
+                               // Skapa en Book och skicka in
+                               let newBook = Book(
+                                   title: book.title,
+                                   author: book.author,
+                                   comment: "",
+                                   userId: Auth.auth().currentUser?.uid ?? "",
+                                   coverURL: book.coverURL?.absoluteString ?? "",
+                                   timestamp: Date(),
+                                   isFavorite: true
+                               )
+
+                               favoritesViewModel.addToFavorites(book: newBook)
+                           } label: {
+                               Image(systemName: "star")
+                           }
                         }
                         .padding(.vertical, 4)
                     }
@@ -79,5 +100,5 @@ struct BookListView: View {
 }
 
 #Preview {
-    BookListView()
+  BookListView( favoritesViewModel: FavoritesViewModel())
 }

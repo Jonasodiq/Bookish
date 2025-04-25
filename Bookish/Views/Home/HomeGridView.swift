@@ -8,41 +8,44 @@
 import SwiftUI
 
 struct HomeGridView: View {
-  @EnvironmentObject var authViewModel: AuthViewModel
-  @StateObject private var myBooksViewModel = MyBooksViewModel()
-  
+    @EnvironmentObject var authViewModel: AuthViewModel
+    let myBooksViewModel: MyBooksViewModel
+    
     let columns = [GridItem(.flexible()), GridItem(.flexible())]
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 20) {
-                  
-                  HomeCardView(
+                    
+                    HomeCardView(
                         title: "✏️ Ny bok",
                         color: .orange,
                         icon: "square.and.pencil",
                         destination: AddBookView(viewModel: myBooksViewModel)
                     )
-                  
+                    
                     HomeCardView(
                         title: "📖 Böcker",
                         color: .blue,
                         icon: "book.fill",
-                        destination: BookListView()
+                        destination: BookListView(favoritesViewModel: FavoritesViewModel())
                     )
+                    
                     HomeCardView(
                         title: "📚 Mina böcker",
                         color: .green,
                         icon: "books.vertical",
-                        destination: MyBooksView()
+                        destination: MyBooksView(viewModel: myBooksViewModel)
                     )
+                    
                     HomeCardView(
                         title: "📌 Senast läst",
                         color: .yellow,
                         icon: "clock",
                         destination: LastReadView()
                     )
+                    
                     HomeCardView(
                         title: "📤 Share book",
                         color: .purple,
@@ -66,6 +69,6 @@ struct HomeGridView: View {
 }
 
 #Preview {
-    HomeGridView()
+    HomeGridView(myBooksViewModel: MyBooksViewModel())
         .environmentObject(AuthViewModel())
 }

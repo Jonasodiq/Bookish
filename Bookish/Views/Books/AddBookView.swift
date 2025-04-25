@@ -39,6 +39,8 @@ struct AddBookView: View {
                         return
                     }
 
+                  print("📥 Saving book: \(title) by \(author)")
+                  
                     viewModel.addBook(
                         title: title,
                         author: author,
