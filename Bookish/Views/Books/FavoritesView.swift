@@ -94,5 +94,5 @@ struct FavoritesView: View {
 }
 
 #Preview {
-  FavoritesView(viewModel: FavoritesViewModel())}
-
+  FavoritesView(viewModel: FavoritesViewModel())
+}

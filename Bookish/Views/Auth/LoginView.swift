@@ -14,55 +14,86 @@ struct LoginView: View {
     @State private var isNewUser = false
     @State private var errorMessage: String?
     @State private var isLoading = false
+    @FocusState private var focusedField: Field?
+
+    enum Field {
+        case email
+        case password
+    }
+
 
     var body: some View {
-        VStack {
-            Text(isNewUser ? "Sign Up" : "Sign In")
+      
+      ZStack {
+        Color.green.opacity(0.2).edgesIgnoringSafeArea(.all)
+        VStack(alignment: .center, spacing: 32) {
+          
+          Image(systemName: "person.badge.key")
+            .resizable()
+            .frame(width: 100, height: 100)
+            .foregroundColor(.blue)
+          
+          
+          // MARK: - Card
+          VStack(spacing: 24) {
+            // MARK: - TextField
+            VStack {
+              Text(isNewUser ? "Sign Up" : "Sign In")
                 .font(.largeTitle.bold())
-                .padding(.bottom, 20)
+                .foregroundColor(.blue)
+              
+              TextField("Email", text: $email)
+                  .textFieldStyle(.roundedBorder)
+                  .keyboardType(.emailAddress)
+                  .autocapitalization(.none)
+                  .submitLabel(.next)
+                  .focused($focusedField, equals: .email)
+                  .onSubmit {
+                      focusedField = .password
+                  }
 
-            VStack(spacing: 15) {
-                TextField("Email", text: $email)
-                    .textFieldStyle(.roundedBorder)
-                    .keyboardType(.emailAddress)
-                    .autocapitalization(.none)
-
-                SecureField("Password", text: $password)
-                    .textFieldStyle(.roundedBorder)
-
-                if let error = errorMessage {
-                    Text(error)
-                        .foregroundColor(.red)
-                        .font(.footnote)
-                        .multilineTextAlignment(.center)
-                        .padding(.top, 5)
-                }
-
-                if isLoading {
-                    ProgressView()
-                        .padding()
-                }
-
-                Button(isNewUser ? "Create Account" : "Login") {
-                    authenticate()
-                }
-                .disabled(email.isEmpty || password.isEmpty || isLoading)
-                .buttonStyle(.borderedProminent)
-                .padding(.top)
-
-                Button("Switch to \(isNewUser ? "Login" : "Sign Up")") {
-                    isNewUser.toggle()
-                    errorMessage = nil
-                }
-                .font(.footnote)
-                .padding(.top, 5)
-            }
-            .padding()
-            .background(Color(.secondarySystemBackground))
-            .cornerRadius(12)
-            .shadow(radius: 4)
-            .padding()
-        }
+              SecureField("Password", text: $password)
+                  .textFieldStyle(.roundedBorder)
+                  .submitLabel(.go)
+                  .focused($focusedField, equals: .password)
+                  .onSubmit {
+                      authenticate()
+                  }
+              
+              if let error = errorMessage {
+                Text(error)
+                  .foregroundColor(.red)
+                  .font(.footnote)
+                  .multilineTextAlignment(.center)
+                  .padding(.top, 5)
+              }
+              
+              if isLoading {
+                ProgressView()
+                  .padding()
+              }
+            } //: - VStack
+            // MARK: - BUTTONS
+            VStack(spacing: 16) {
+              Button(isNewUser ? "Skapa Konto" : "Logga In") {
+                authenticate()
+              }
+              .primaryButton()
+              
+              Button("Byt till / \(isNewUser ? "Logga In" : "Skapa Konto")") {
+                isNewUser.toggle()
+                errorMessage = nil
+              }
+              .secondaryButton()
+            } //: - VStack
+          }  //: - VStack Card
+          .padding()
+          .background(Color(.secondarySystemBackground))
+          .cornerRadius(12)
+          .shadow(radius: 4)
+          .padding()
+        } //: - VStack
+      } //: - ZStack
     }
 
     func authenticate() {

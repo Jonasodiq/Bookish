@@ -13,11 +13,14 @@ class BookListViewModel: ObservableObject {
 
     private let service = BookAPIService()
 
-    func searchBooks(query: String) {
-        isLoading = true
-        service.fetchBooks(query: query) { [weak self] result in
-            self?.books = result
-            self?.isLoading = false
-        }
-    }
+  func searchBooks(query: String, language: String, searchType: SearchType) {
+      isLoading = true
+      service.fetchBooks(query: query, language: language, searchType: searchType) { [weak self] result in
+          DispatchQueue.main.async {
+              self?.books = result
+              self?.isLoading = false
+          }
+      }
+  }
 }
+

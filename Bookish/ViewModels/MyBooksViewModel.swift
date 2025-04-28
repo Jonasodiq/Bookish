@@ -77,19 +77,37 @@ class MyBooksViewModel: ObservableObject {
 
 
     // MARK: - Toggle favorite status
-    func toggleFavorite(for book: Book) {
-        guard let id = book.id else { return }
+  func toggleFavorite(for book: Book) {
+      guard let id = book.id else { return }
 
-        let newValue = !book.isFavorite
+      let newValue = !book.isFavorite
 
-        do {
-            try db.collection("books")
-                .document(id)
-                .setData(["isFavorite": newValue], merge: true)
-            fetchMyBooks()
-        } catch {
-            print("❌ Failed to update favorite: \(error.localizedDescription)")
-        }
-    }
+      db.collection("books")
+          .document(id)
+          .setData(["isFavorite": newValue], merge: true) { error in
+              if let error = error {
+                  print("❌ Failed to update favorite: \(error.localizedDescription)")
+              } else {
+                  self.fetchMyBooks()
+              }
+          }
+  }
+  
+  func deleteBook(_ book: Book) {
+      guard let id = book.id else { return }
+
+      db.collection("books")
+          .document(id)
+          .delete { [weak self] error in
+              if let error = error {
+                  print("❌ Failed to delete book: \(error.localizedDescription)")
+              } else {
+                  print("✅ Book deleted successfully")
+                  self?.fetchMyBooks() // Ladda om böckerna
+              }
+          }
+  }
+
+
 }
 

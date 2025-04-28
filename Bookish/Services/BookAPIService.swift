@@ -8,9 +8,25 @@
 import Foundation
 
 class BookAPIService {
-    func fetchBooks(query: String = "swift", completion: @escaping ([BookItem]) -> Void) {
-        let urlString = "https://openlibrary.org/search.json?q=\(query)&limit=20"
-        guard let url = URL(string: urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!) else {
+    func fetchBooks(query: String = "swift", language: String = "", searchType: SearchType, completion: @escaping ([BookItem]) -> Void) {
+        var urlString = "https://openlibrary.org/search.json?"
+        
+        switch searchType {
+        case .title:
+            urlString += "title=\(query)"
+        case .author:
+            urlString += "author=\(query)"
+        }
+        
+        urlString += "&limit=20"
+        
+        // Lägg till språkfilter om det finns
+        if !language.isEmpty {
+            urlString += "&language=\(language)"
+        }
+        
+        guard let encodedURLString = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+              let url = URL(string: encodedURLString) else {
             completion([])
             return
         }

@@ -16,11 +16,19 @@ struct MyBooksView: View {
     @State private var selectedBook: Book?
     @State private var showToast = false
     @State private var toastMessage = ""
+    @State private var showOnlyFavorites = false
 
     var body: some View {
+      let booksToShow = showOnlyFavorites ? viewModel.myBooks.filter { $0.isFavorite } : viewModel.myBooks
+
         NavigationStack {
+          
+          Toggle("Favoriter", isOn: $showOnlyFavorites)
+              .padding(.horizontal)
+          
             List {
-                ForEach(viewModel.myBooks) { book in
+                ForEach(booksToShow) { book in
+                  
                     HStack {
                         AsyncImage(url: URL(string: book.coverURL)) { phase in
                             if let image = phase.image {
@@ -56,15 +64,17 @@ struct MyBooksView: View {
                         .buttonStyle(.plain)
                     }
                     .padding(.vertical, 4)
-                }
+                }  // : ForEach
+                .onDelete(perform: deleteBooks)
             }
             .navigationTitle("My Books")
             .toolbar {
+  
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
                         showingAddBook.toggle()
                     } label: {
-                        Image(systemName: "plus")
+                        Image(systemName: "plus.circle")
                     }
                 }
             }
@@ -106,7 +116,16 @@ struct MyBooksView: View {
                 }, alignment: .top
             )
         }
-    }
+    } //: - Body
+  
+  private func deleteBooks(at offsets: IndexSet) {
+      for index in offsets {
+          let book = viewModel.myBooks[index]
+          viewModel.deleteBook(book)
+      }
+  }
+
+
 }
 
 #Preview {

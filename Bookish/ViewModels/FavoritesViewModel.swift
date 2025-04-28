@@ -34,32 +34,35 @@ class FavoritesViewModel: ObservableObject {
             }
     }
   
-    func removeFromFavorites(book: Book) {
-        guard let id = book.id else { return }
+  func removeFromFavorites(book: Book) {
+      guard let id = book.id else { return }
 
-        do {
-            try db.collection("books")
-                .document(id)
-                .setData(["isFavorite": false], merge: true)
+      db.collection("books")
+          .document(id)
+          .setData(["isFavorite": false], merge: true) { error in
+              if let error = error {
+                  print("❌ Failed to remove from favorites: \(error.localizedDescription)")
+              } else {
+                  // Uppdatera listan efter borttagning
+                  self.fetchFavoriteBooks()
+              }
+          }
+  }
 
-            // Uppdatera listan efter borttagning
-            fetchFavoriteBooks()
-        } catch {
-            print("❌ Failed to remove from favorites: \(error.localizedDescription)")
-        }
-    }
   
   func addToFavorites(book: Book) {
       guard let id = book.id else { return }
 
-      do {
-          try db.collection("books")
-              .document(id)
-              .setData(["isFavorite": true], merge: true)
-          fetchFavoriteBooks()
-      } catch {
-          print("❌ Failed to add to favorites: \(error.localizedDescription)")
-      }
+      db.collection("books")
+          .document(id)
+          .setData(["isFavorite": true], merge: true) { error in
+              if let error = error {
+                  print("❌ Failed to add to favorites: \(error.localizedDescription)")
+              } else {
+                  self.fetchFavoriteBooks()
+              }
+          }
   }
+
 
 }

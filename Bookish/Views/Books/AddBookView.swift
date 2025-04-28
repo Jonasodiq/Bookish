@@ -38,8 +38,6 @@ struct AddBookView: View {
                         showAlert = true
                         return
                     }
-
-                  print("📥 Saving book: \(title) by \(author)")
                   
                     viewModel.addBook(
                         title: title,
